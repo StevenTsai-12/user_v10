@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>智慧場域管理系統</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", sans-serif;
+      background-color: #f0f2f5;
+    }
+
+    .navbar {
+      background-color: #2196F3;
+      padding: 20px;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .datetime {
+      text-align: center;
+      font-size: 18px;
+      color: #555;
+      margin: 20px 0 10px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      gap: 40px;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px 20px;
+      width: 260px;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    .card h3 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .card button {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .card button:hover {
+      background-color: #1976D2;
+    }
+
+    .footer {
+      margin-top: 60px;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      padding-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    智慧場域管理系統
+  </div>
+
+  <div class="datetime" id="datetimeDisplay">
+    <!-- JS 插入時間 -->
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h3>租借系統</h3>
+      <button onclick="location.href='/rental'">前往</button>
+    </div>
+    <div class="card">
+      <h3>門口辨識系統</h3>
+      <button onclick="location.href='/entrance'">前往</button>
+    </div>
+    <div class="card">
+      <h3>租借資料查詢</h3>
+      <button onclick="location.href='/records'">查詢</button>
+    </div>
+    <div class="card">
+      <h3>門口紀錄查詢</h3>
+      <button onclick="location.href='/entrance_records'">查詢</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2025 智慧場域管理系統
+  </div>
+
+  <script>
+    function updateDateTime() {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
+      const timeStr = now.toLocaleTimeString('zh-TW', { hour12: false });
+      document.getElementById("datetimeDisplay").innerHTML = `📅 ${dateStr}　🕒 ${timeStr}`;
+    }
+
+    setInterval(updateDateTime, 1000);
+    updateDateTime(); // 初始顯示
+  </script>
+
+</body>
+</html>

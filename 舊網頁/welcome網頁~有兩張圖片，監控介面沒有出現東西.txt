@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>智慧場域管理系統</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", sans-serif;
+      background-color: #f4f4f4;
+      overflow-x: hidden;
+    }
+
+    .navbar {
+      background-color: #2196F3;
+      padding: 15px 20px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+
+    .menu-icon {
+      cursor: pointer;
+      margin-right: 15px;
+      font-size: 24px;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background-color: #eeeeee;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+      padding-top: 60px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 2000;
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 15px 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 18px;
+    }
+
+    .sidebar a:hover {
+      background-color: #ccc;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: none;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    .summary {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .summary span {
+      font-weight: bold;
+      margin: 0 10px;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      padding-bottom: 20px;
+    }
+
+    .grid-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "title  title"
+        "left   right";
+      row-gap: 15px;       /* 控制 title 和圖片間的距離 */
+      column-gap: 16px;   /* 控制左右圖片間的距離 */
+      align-items: start;
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 12px;
+      padding: 15px 30px 30px 30px;  /* top right bottom left */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .room-title {
+      grid-area: title;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .left-column {
+      grid-area: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .right-column {
+      grid-area: right;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .left-column img,
+    .right-column img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .info-block {
+      text-align: left;
+    }
+
+    .info-block p {
+      font-size: 17px;
+      margin: 6px 0;
+      line-height: 1.8;
+    }
+
+    .time-block {
+      font-size: 17px;
+      color: #444;
+      text-align: left;
+    }
+
+    .time-block p {
+      margin: 6px 0;
+      line-height: 1.8;
+    }
+
+    .time-block button {
+      margin-top: 15px;
+      background-color: #FF9800;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .time-block button:hover {
+      background-color: #e68900;
+    }
+
+    @media (max-width: 768px) {
+      .grid-wrapper {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "title"
+          "left"
+          "right";
+        text-align: center;
+      }
+
+      .info-block,
+      .time-block {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="menu-icon" onclick="openSidebar()">☰</div>
+    智慧場域管理系統
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <a href="?page=home">📁 首頁（租借系統）</a>
+    <a href="?page=dashboard">🧰 功能頁（管理系統）</a>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <div class="summary">
+    <span id="current-date">載入中...</span> | ⏰ <span id="current-time">載入中...</span>
+  </div>
+
+  <div id="home-section">
+    <div class="grid-wrapper">
+      <h3 class="room-title">ARG0103 智慧機電實驗室</h3>
+      <div class="left-column">
+        <img src="/static/images/meetingroom.jpg" alt="圖片1">
+        <div class="info-block">
+          <p>🕒 租借時間：08:00 - 20:00</p>
+          <p>📏 面積：長100公尺 × 寬100公尺</p>
+          <p>👥 可容積：100人</p>
+          <p>📞 聯絡電話：05-6315375</p>
+          <p>👤 租借聯絡人：李政道</p>
+        </div>
+      </div>
+      <div class="right-column">
+        <img src="/static/images/meetingroom2.jpg" alt="圖片2">
+        <div class="time-block">
+          <p><strong>高峰時間：</strong><br>平日：08:00-20:00<br>假日：06:00-20:00</p>
+          <p><strong>低峰時間：</strong><br>平日：06:00-20:00</p>
+          <button onclick="location.href='/rental'">立即預訂</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">© 2025 智慧場域管理系統</div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+      const timeStr = now.toLocaleTimeString('zh-TW', { hour12: false });
+      document.getElementById('current-date').textContent = dateStr;
+      document.getElementById('current-time').textContent = timeStr;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    function openSidebar() {
+      document.getElementById("sidebar").classList.add("active");
+      document.getElementById("overlay").classList.add("active");
+    }
+
+    function closeSidebar() {
+      document.getElementById("sidebar").classList.remove("active");
+      document.getElementById("overlay").classList.remove("active");
+    }
+
+    window.onload = function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const page = urlParams.get("page");
+
+      const homeSection = document.getElementById("home-section");
+
+      if (page === "dashboard") {
+        homeSection.style.display = "none";
+      } else {
+        homeSection.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>

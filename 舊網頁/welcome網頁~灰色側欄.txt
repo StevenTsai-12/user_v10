@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>智慧場域管理系統</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", sans-serif;
+      background-color: #f4f4f4;
+      overflow-x: hidden;
+    }
+
+    .navbar {
+      background-color: #2196F3;
+      padding: 15px 20px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+
+    .menu-icon {
+      cursor: pointer;
+      margin-right: 15px;
+      font-size: 24px;
+    }
+
+    /* 側邊欄樣式 */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background-color: #eeeeee;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+      padding-top: 60px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 2000;
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 15px 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 18px;
+    }
+
+    .sidebar a:hover {
+      background-color: #ccc;
+    }
+
+    /* 灰色遮罩 */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: none;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    .summary {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .summary span {
+      font-weight: bold;
+      margin: 0 10px;
+    }
+
+    .container, .container1 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      padding: 40px 10%;
+      justify-items: center;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 30px;
+      text-align: center;
+      width: 100%;
+      max-width: 280px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 20px;
+    }
+
+    .card h3 {
+      font-size: 20px;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    .card button {
+      margin-top: 10px;
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .card button:hover {
+      background-color: #1976D2;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      padding-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ☰ 導覽列 -->
+  <div class="navbar">
+    <div class="menu-icon" onclick="openSidebar()">☰</div>
+    智慧場域管理系統
+  </div>
+
+  <!-- 側邊欄 -->
+  <div class="sidebar" id="sidebar">
+    <a href="#" onclick="showHome()">📁 首頁（租借系統）</a>
+    <a href="#" onclick="showDashboard()">🧰 功能頁（管理系統）</a>
+  </div>
+
+  <!-- 灰色遮罩 -->
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- 日期時間 -->
+  <div class="summary">
+    📅 <span id="current-date">載入中...</span> | ⏰ <span id="current-time">載入中...</span>
+  </div>
+
+  <!-- 首頁 -->
+  <div class="container" id="home-section">
+    <div class="card">
+      <img src="/static/icons/rental.png" alt="租借系統">
+      <h3>租借系統</h3>
+      <button onclick="location.href='/rental'">前往</button>
+    </div>
+  </div>
+
+  <!-- 功能頁 -->
+  <div class="container1" id="dashboard-section" style="display: none;">
+    <div class="card">
+      <img src="/static/icons/rental1.png" alt="驗證系統">
+      <h3>審核系統</h3>
+      <button onclick="location.href='/verify_requests'">前往</button>
+    </div>
+    <div class="card">
+      <img src="/static/icons/query.png" alt="租借查詢">
+      <h3>租借資料查詢</h3>
+      <button onclick="location.href='/records'">查詢</button>
+    </div>
+    <div class="card">
+      <img src="/static/icons/door.png" alt="門口辨識">
+      <h3>門口辨識系統</h3>
+      <button onclick="location.href='/entrance'">前往</button>
+    </div>
+    <div class="card">
+      <img src="/static/icons/history.png" alt="門口紀錄">
+      <h3>門口紀錄查詢</h3>
+      <button onclick="location.href='/entrance_records'">查詢</button>
+    </div>
+    <div class="card">
+      <img src="/static/icons/Car.png" alt="自走車系統">
+      <h3>自走車監控系統</h3>
+      <button onclick="location.href='/car'">前往</button>
+    </div>
+    <div class="card">
+      <img src="/static/icons/Car1.png" alt="自走車紀錄">
+      <h3>自走車紀錄查詢</h3>
+      <button onclick="location.href='/car_records'">查詢</button>
+    </div>
+  </div>
+
+  <div class="footer">© 2025 智慧場域管理系統</div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+      const timeStr = now.toLocaleTimeString('zh-TW', { hour12: false });
+      document.getElementById('current-date').textContent = dateStr;
+      document.getElementById('current-time').textContent = timeStr;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    function openSidebar() {
+      document.getElementById("sidebar").classList.add("active");
+      document.getElementById("overlay").classList.add("active");
+    }
+
+    function closeSidebar() {
+      document.getElementById("sidebar").classList.remove("active");
+      document.getElementById("overlay").classList.remove("active");
+    }
+
+    function showHome() {
+      document.getElementById("home-section").style.display = "grid";
+      document.getElementById("dashboard-section").style.display = "none";
+      closeSidebar();
+    }
+
+    function showDashboard() {
+      document.getElementById("home-section").style.display = "none";
+      document.getElementById("dashboard-section").style.display = "grid";
+      closeSidebar();
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 登出 -->
+<!-- 上面這段確保 current_page 變數有被正確取得 -->
+{% set current_page = request.args.get('page', 'home') %}
+
+<!-- 登出按鈕 -->
+<form action="{{ url_for('logout') }}?page={{ current_page }}" method="get" style="display: inline-block; margin-left: 10px;">
+  <button type="submit" class="btn btn-danger btn-sm" style="font-size: 15px;">登出</button>
+</form>
+
+</body>
+</html>

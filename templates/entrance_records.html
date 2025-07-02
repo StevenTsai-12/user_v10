@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>進出場統計紀錄</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: "Microsoft JhengHei", sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 90%;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .btn {
+            display: inline-block;              /* 讓 <a> 顯示成按鈕 */
+            width: 150px;
+            margin: 0;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;              /* 移除底線 */
+            cursor: pointer;
+            box-sizing: border-box;             /* 防止寬度跑版 */
+        }
+
+        .btn-green {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-green:hover {
+            background-color: #388E3C;
+        }
+
+        .btn-red {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-red:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn-blue {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background-color: #1976D2;
+        }
+
+        .query-form {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .query-form button {
+            padding: 6px 12px;
+            font-size: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .query-form button:hover {
+            background-color: #388E3C;
+        }
+
+        /* 三欄對齊按鈕與欄位 */
+        .aligned-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .aligned-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .aligned-item input {
+            width: 150px;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h2>進出場統計紀錄</h2>
+
+    <form method="GET" action="/entrance_records" class="query-form">
+        <label for="date">指定日期查詢：</label>
+        <input type="date" name="date" id="date" value="{{ date_filter }}">
+        <button type="submit">查詢</button>
+    </form>
+
+    <div class="aligned-grid">
+        <div class="aligned-item">
+            <!-- 下載全部 CSV -->
+            <a href="{{ url_for('download_entrance_csv', date=date_filter) }}" class="btn btn-green">直接下載</a>
+            <!-- 對應搜尋 ID -->
+            <input type="text" id="filterId" placeholder="搜尋 ID..." onkeyup="filterTable()">
+        </div>
+        <div class="aligned-item">
+            <!-- 匯出篩選後 CSV (藍色) -->
+            <button class="btn btn-blue" onclick="exportVisibleTable()">篩選後下載</button>
+            <!-- 對應搜尋違規時間 -->
+            <input type="text" id="filterViolationTime" placeholder="搜尋違規時間..." onkeyup="filterTable()">
+        </div>
+        <div class="aligned-item">
+            <!-- 登出 -->
+            <a href="/logout?page=dashboard" class="btn btn-red">登出</a>
+<!--            <form action="/logout" method="get">-->
+<!--                <button type="submit" class="btn btn-red">登出</button>-->
+<!--            </form>-->
+            <!-- 對應搜尋儲存時間 -->
+            <input type="text" id="filterSavedAt" placeholder="搜尋儲存時間..." onkeyup="filterTable()">
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>進場</th>
+                <th>出場</th>
+                <th>違規</th>
+                <th>違規時間</th>
+                <th>儲存時間</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.id }}</td>
+                <td>{{ record.in_count }}</td>
+                <td>{{ record.out_count }}</td>
+                <td>{{ record.violation_count }}</td>
+                <td>{{ record.violation_time }}</td>
+                <td>{{ record.saved_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function filterTable() {
+            const idFilter = document.getElementById("filterId").value.toLowerCase();
+            const violationFilter = document.getElementById("filterViolationTime").value.toLowerCase();
+            const savedFilter = document.getElementById("filterSavedAt").value.toLowerCase();
+
+            const rows = document.querySelectorAll("table tbody tr");
+
+            rows.forEach(row => {
+                const id = row.cells[0].textContent.toLowerCase();
+                const violationTime = row.cells[4].textContent.toLowerCase();
+                const savedAt = row.cells[5].textContent.toLowerCase();
+
+                const show =
+                    (!idFilter || id.includes(idFilter)) &&
+                    (!violationFilter || violationTime.includes(violationFilter)) &&
+                    (!savedFilter || savedAt.includes(savedFilter));
+
+                row.style.display = show ? "" : "none";
+            });
+        }
+
+        function exportVisibleTable() {
+            const rows = document.querySelectorAll("table tr");
+            let csvContent = "";
+
+            rows.forEach((row, index) => {
+                if (index === 0 || row.style.display !== "none") {
+                    const cols = Array.from(row.querySelectorAll("th, td"))
+                                      .map(col => `"${col.textContent.trim().replace(/"/g, '""')}"`)
+                                      .join(",");
+                    csvContent += cols + "\n";
+                }
+            });
+
+            // 取得今天日期：yyyy-mm-dd
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const dateString = `${yyyy}-${mm}-${dd}`;
+
+            const filename = `${dateString}_篩選.csv`;
+
+            const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+
+</body>
+</html>
