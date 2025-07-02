@@ -66,7 +66,7 @@ def send_otp_email(user_gmail, otp):
 
         若非本人操作，請忽略此郵件。
 
-        感謝您的配合！
+        感謝您的配合XD！
         租借系統團隊
         """
 
